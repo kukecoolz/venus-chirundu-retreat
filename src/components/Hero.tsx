@@ -1,18 +1,42 @@
 
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const Hero = () => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  const backgroundImages = [
+    "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80",
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80",
+    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        (prevIndex + 1) % backgroundImages.length
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Overlay */}
+      {/* Background Images with Transitions */}
       <div className="absolute inset-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-top bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80')"
-          }}
-        ></div>
+        {backgroundImages.map((image, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 bg-cover bg-top bg-no-repeat transition-opacity duration-2000 ${
+              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ backgroundImage: `url('${image}')` }}
+          ></div>
+        ))}
         <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>
         
         {/* Animated overlay elements */}
@@ -83,6 +107,21 @@ const Hero = () => {
         <div className="w-10 h-14 border-2 border-white/60 rounded-full flex justify-center backdrop-blur-sm bg-white/10">
           <div className="w-1.5 h-4 bg-gradient-to-b from-white to-amber-300 rounded-full mt-3 animate-pulse"></div>
         </div>
+      </div>
+
+      {/* Image transition indicators */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        {backgroundImages.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentImageIndex(index)}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              index === currentImageIndex 
+                ? 'bg-white scale-125' 
+                : 'bg-white/50 hover:bg-white/70'
+            }`}
+          />
+        ))}
       </div>
 
       {/* Decorative corner elements */}
